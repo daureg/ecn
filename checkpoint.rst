@@ -1,3 +1,6 @@
+
+.. vim: set tw=80
+
 Puisque le projet avait débuté dès 2010, la première semaine a en partie été
 consacré à se familiariser avec le travail réalisé par Elsa. Partant du
 volumineux nuage de points capté par MCG3D, elle l'avait découpé en différentes
@@ -53,3 +56,56 @@ qu'en flash et dans un format destiné à un plugin web spécifique. Moyennant u
 nouvelle contribution à la cause, on peut aussi exporter vers iOS et Android.
 
 .. [#] c'est bizarre à dire, mais c'est libre aussi…
+
+Concrètement, après avoir lancé l'éditeur, on peut importer des *assets* [#]_
+qui peuvent être des textures, des sons, des vidéos, des scripts ou encore des
+modèles 3D dans divers formats, chaque importation étant paramétrée par
+différents paramètres, notamment le degré de compression du son ou des images.
+Tous ces assets sont regroupés dans une banque de donnée [#]_ et on peut ensuite
+créer une *scène* puis la peupler avec des assets. Ils accèdent alors au statut
+convoité de *GameObject* [#]_, à qui on peut affecter des *Composants* [#]_ pour
+préciser leur comportement. Ainsi, tous les objets possèdent un composant
+*transform* qui stocke leur position, la rotation et leur échelle et que l'on
+peut modifier en temps réel. La plupart ont aussi un composant *renderer* (qui
+définit les paramètres de représentation comme les matériaux utilisés ou les
+ombres projetées) et un *collider* (qui spécifie la forme et les dimensions de
+la bounding box). Certains objets spécifiques disposent de composants
+particuliers. Au hasard, le composant *Camera* d'une caméra, qui permet de fixer
+les options de projection, de culling, etc, le *Character Controller* qui gère
+la physique irréaliste d'un personnage de jeu vidéo qui peut faire des
+demi-tours instatanés quel que soit sa masse et sa vitesse ou le *rigidbody*,
+plus conforme à la science (ou du moins à sa version simulé). La `liste complète
+<http://unity3d.com/support/documentation/Components/index.html>`_ est
+volumineuse et comprend aussi ce qui se rapporte à l'audio, aux particules, à
+l'interface utilisateur, etc.
+
+.. [#] qu'on pourrait traduire par *ressource* mais ce serait plus vague (et
+        plus long à taper…).
+.. [#] c'est là une des particularités d'Unity puisque les assets sont stockés
+        un dossier spécial sur le disque dur et sont automatiquement versionnés.
+        En cas de crash de l'interface et même sans sauvegarde, tous les assets
+        sont encore présents au redémarrage, sauf le dernier, qui est soupçonné
+        d'être le responsable de l'incident.
+.. [#] on ne peut désormais plus douter de l'orientation initiale de Unity…
+.. [#] *Components* dans la version originale, mais on est tout de même au
+        Québec, un peu de respect pour la langue de Molière !
+ 
+Au-delà de tous ces composants réutilisables qui couvrent déjà un large panel de
+besoins, Unity permet de spécifier des comportement personnalisés au moyen de
+scripts. Plus précisément, chaque script implémente une sous classe de la classe
+``MonoBehaviour`` et devient un composant qu'on peut alors ajouter à n'importe quel
+GameObject. Il est paramétrable par ses variables membres publiques qui sont
+visibles dans l'interface principale. Ces scripts peuvent être écrit en
+Javascript [#]_, C# [#]_ ou Boo [#]_. Ils sont compilés une première fois sous
+forme de bibliothèques partagées .NET et recompilés juste-à-temps à l'exécution,
+ce qui permet d'atteindre la moitié des performances d'un code natif en C++.
+
+.. [#] il s'agit en fait d'une version plus strict que la norme ECMA ou toute
+        variables doivent être typés (pour des raisons de performance).
+.. [#] ce qui leur permet d'accéder à une grande part de l'API .NET, celle
+        implémentée par le projet Mono et présente ainsi l'avantage d'être
+        disponible sur d'autre plateforme que Windows.
+.. [#] décrit comme un mélange entre python et C# par son créateur [BOO2005]_, et
+        que j'aurais bien essayé par curiosité mais qui est manifestement très peu
+        utilisé par la communauté ce qui réduit l'aide disponible.
+.. [BOO2005] http://boo.codehaus.org/BooManifesto.pdf
