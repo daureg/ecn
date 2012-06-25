@@ -1,5 +1,5 @@
 
-.. vim: set tw=80
+.. vim: tw=80 spell:
 
 Puisque le projet avait débuté dès 2010, la première semaine a en partie été
 consacré à se familiariser avec le travail réalisé par Elsa. Partant du
@@ -74,7 +74,7 @@ particuliers. Au hasard, le composant *Camera* d'une caméra, qui permet de fixe
 les options de projection, de culling, etc, le *Character Controller* qui gère
 la physique irréaliste d'un personnage de jeu vidéo qui peut faire des
 demi-tours instatanés quel que soit sa masse et sa vitesse ou le *rigidbody*,
-plus conforme à la science (ou du moins à sa version simulé). La `liste complète
+plus conforme à la science (ou du moins à sa version simulée). La `liste complète
 <http://unity3d.com/support/documentation/Components/index.html>`_ est
 volumineuse et comprend aussi ce qui se rapporte à l'audio, aux particules, à
 l'interface utilisateur, etc.
@@ -88,19 +88,27 @@ l'interface utilisateur, etc.
         d'être le responsable de l'incident.
 .. [#] on ne peut désormais plus douter de l'orientation initiale de Unity…
 .. [#] *Components* dans la version originale, mais on est tout de même au
-        Québec, un peu de respect pour la langue de Molière !
+        Québec, un peu de respect pour la langue de Molière !
  
 Au-delà de tous ces composants réutilisables qui couvrent déjà un large panel de
-besoins, Unity permet de spécifier des comportement personnalisés au moyen de
+besoins, Unity permet de spécifier des comportements personnalisés au moyen de
 scripts. Plus précisément, chaque script implémente une sous classe de la classe
-``MonoBehaviour`` et devient un composant qu'on peut alors ajouter à n'importe quel
-GameObject. Il est paramétrable par ses variables membres publiques qui sont
-visibles dans l'interface principale. Ces scripts peuvent être écrit en
+``MonoBehaviour`` et devient un composant qu'on peut alors ajouter à n'importe
+quel GameObject. Il est paramétrable par ses variables membres publiques qui
+sont visibles dans l'interface principale. Ces scripts peuvent être écrits en
 Javascript [#]_, C# [#]_ ou Boo [#]_. Ils sont compilés une première fois sous
-forme de bibliothèques partagées .NET et recompilés juste-à-temps à l'exécution,
-ce qui permet d'atteindre la moitié des performances d'un code natif en C++.
+forme de bibliothèques partagées .NET et recompilés *juste-à-temps* à
+l'exécution, ce qui permet d'atteindre la moitié des performances d'un code
+natif en C++. Ces sous-classes peuvent en particulier redéfinir les méthodes
+``Start()``, qui sert de constructeur, et ``Upadte()``, qui est appelée à chaque
+affichage d'une image et qui permet par exemple d'animer un objet en interpolant
+sa position en fonction du temps écoulé depuis le dernier appel [#]_. On peut
+aussi réagir à différents évenements en implémentant les méthodes dont le nom
+commence par ``On`` [#]_. Ainsi ``OnGUI()`` est appelée à chaque événement
+d'entrée de l'utilisateur et ``OnTriggerEnter()`` est déclenché lorsque
+l'utilisateur entre dans une zone prédéfinie.
 
-.. [#] il s'agit en fait d'une version plus strict que la norme ECMA ou toute
+.. [#] il s'agit en fait d'une version plus stricte que la norme ECMA ou toutes
         variables doivent être typés (pour des raisons de performance).
 .. [#] ce qui leur permet d'accéder à une grande part de l'API .NET, celle
         implémentée par le projet Mono et présente ainsi l'avantage d'être
@@ -108,4 +116,13 @@ ce qui permet d'atteindre la moitié des performances d'un code natif en C++.
 .. [#] décrit comme un mélange entre python et C# par son créateur [BOO2005]_, et
         que j'aurais bien essayé par curiosité mais qui est manifestement très peu
         utilisé par la communauté ce qui réduit l'aide disponible.
+.. [#] pour une simulation physique, on peut aussi utiliser ``OnFixedUpdate()``
+        qui est appelé à intervalle constant.
+.. [#] la liste complète est disponible `ici
+        <unity3d.com/support/documentation/ScriptReference/MonoBehaviour.html>`_
 .. [BOO2005] http://boo.codehaus.org/BooManifesto.pdf
+
+À ce stade, le lecteur est normalement impatient d'avoir un exemple de ces
+fameux scripts. Outre ceux fournis avec Unity pour le déplacement d'un
+personnage à la souris et au clavier (que j'ai un peu adapté pour qu'il permette
+de voler), le premier que j'ai écrits
