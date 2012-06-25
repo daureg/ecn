@@ -119,10 +119,87 @@ l'utilisateur entre dans une zone prédéfinie.
 .. [#] pour une simulation physique, on peut aussi utiliser ``OnFixedUpdate()``
         qui est appelé à intervalle constant.
 .. [#] la liste complète est disponible `ici
-        <unity3d.com/support/documentation/ScriptReference/MonoBehaviour.html>`_
+        <http://unity3d.com/support/documentation/ScriptReference/MonoBehaviour.html>`_
 .. [BOO2005] http://boo.codehaus.org/BooManifesto.pdf
 
 À ce stade, le lecteur est normalement impatient d'avoir un exemple de ces
 fameux scripts. Outre ceux fournis avec Unity pour le déplacement d'un
 personnage à la souris et au clavier (que j'ai un peu adapté pour qu'il permette
-de voler), le premier que j'ai écrits
+de voler), le premier que j'ai écrit concerne la transition entre la visite de
+la chapelle et l'observation d'un objet en particulier. Le code commenté est
+disponible en annexe mais schématiquement, à chaque image, on lance un rayon à
+partir de la position du visiteur dans la direction de son regard. Si celui-ci
+intersecte l'objet en question, on allume un projecteur pour signaler la
+possibilité d'une interaction. Si l'utilisateur clique, on lance animation qui
+l'amène progressivement en face de l'objet tandis que le reste de la scène
+s'assombrit jusqu'à disparaitre. Une fois arrivé, on affiche divers éléments
+contextuels en prenant soin de désactiver les contrôles de mouvements. Unity
+permet aussi d'envoyer des requêtes à un serveur web par l'intermédiaire de la
+classe `WWWForm
+<http://unity3d.com/support/documentation/ScriptReference/WWWForm.hmtl>`_. J'ai
+exploité cette possibilité en écrivant deux petits scripts PHP qui permettent de
+laisser un commentaire sur l'objet et de récupérer ceux des visiteurs précédents
+qui sont affichés à l'écran. Quand l'utilisateur en à terminer, il lui suffit de
+cliquer pour que la transition se rejoue à l'envers et le ramène à sa situation
+précédente.
+
+Enfin, cette semaine s'est conclue par une visite à la vraie chapelle et au
+musée attenant, situés dans la vielle ville de Québec, ce qui a permis de donner
+une substance à nos travaux.
+
+Parallèlement, Camille s'est attelée à reconstruire un modèle de la chapelle à
+l'aide d'une version d'essai du logiciel 3Dcoat. En effet, j'avais essayé
+d'importer une des tranches dans Unity, mais le résultat était décevant car les
+surfaces sensées être plane étaient bruité ce qui dégradait l'éclairage. De
+plus, par défaut, Unity ne permet pas d'exploiter l'information de couleur
+associée à chaque sommet et affichait donc une teinte uniforme, ce qui n'était
+pas acceptable. Enfin, cet affichage médiocre n'était pas très performant car
+chaque seizième de chapelle comportait environ 250000 faces (plus que l'ensemble
+du modèle complet que nous avons obtenu ultérieurement).
+
+3Dcoat permet donc de charger ce modèle polygonal trop détaillé afin de
+redessiner une surface qui s'appuie dessus. C'est un processus manuel, donc long
+et fastidieux, mais il permet de choisir le niveau de détail de chaque zone ce
+qui donné un résultat plus léger et mieux adapté. Malgré une machine
+performante, 3Dcoat n'a pas supporté de charger l'ensemble de la chapelle et il
+a donc fallu effectuer la retopologie tranche par tranche. C'est d'autant plus
+frustrant que nous avons spontanément commencé par les tranches du cœur avant de
+constater arrivé à la fin, qu'elles étaient les moins réussies, ce qui a forcé
+Camille à les refaire. Cette manière de procéder a aussi nécessité de recoller
+les différents morceaux entre eux, ce qui n'était pas trivial car ils n'avaient
+pas forcément la même géométrie aux extrémités (par exemple un mur pouvait être
+constitué de cinq bandes d'un côté et seulement trois de l'autre). J'ai pour
+cela utilisé le logiciel Blender [#]_, qui a servi par la suite pour le plaquage
+de textures. C'est en effet la méthode la plus simple pour obtenir un bon rendu
+dans Unity et s'il était aussi possible de le faire dans 3Dcoat (de manière plus
+intuitive semble-t-il), le résultat était moins bon. Succinctement, cela
+consiste à déplier le modèle 3D afin de faire correspondre les coordonnées
+*(x,y,z)* de chaque sommet avec un point *(u,v)* [#]_ d'une image qui fournit
+l'information de couleur (dans notre cas, il s'agissait d'images de l'intérieur
+de la chapelle prises par Luc-Antoine Couturier).
+
+.. [#] un logiciel de modélisation et d'animation, qui est, à l'instar de Linux,
+        Firefox, GIMP, ou encore LibreOffice, un des fleurons du mouvement
+        libre.
+.. [#] d'où le nom d'*UV mapping* de cette technique.
+
+C'est d'ailleurs à ce stade que nous avons constaté qu'il nous manquait des
+photos de la nef, ce qui nous a amené à réaliser une autre campagne dans la
+chapelle. Cela nous a aussi permis de scanner la façade extérieur, la chapelle
+publique et le sanctuaire (voir plan [#]_) afin d'intégrer notre travail à un
+modèle 3D de la ville et de contextualiser l'arrivée du visiteur dans la
+chapelle privée. C'est alors posé la question du mobilier et des autels. En
+effet, le scan de 2010 ayant eu pour but de capter le bâtiment, la résolution
+n'était pas adapté à la taille de ces objets, et les traitements ultérieurs
+n'ont fait qu'empirer les choses. En ce qui concerne les meubles, nous avons
+décidé de les modéliser directement dans Blender, en s'appuyant sur le nuage de
+points pour les dimensions et sur des photos pour les détails [#]_. La décision
+a en revanche été plus délicate à prendre car deux écoles s'affrontaient [#]_.
+Nous avions le choix entre scanner avec une meilleure précision ou utiliser la
+photogrammétrie.
+
+.. [#] TODO mettre un plan
+.. [#] tout en sachant que ces objets devant par la suite être dupliqué en
+        dizaine d'exemplaires, (à l'aide d'un script, voir annexes), ils ne
+        doivent pas comporter trop de sommets.
+.. [#] TODO elles s'affrontent toujours d'ailleurs…
