@@ -1,6 +1,12 @@
 
 .. vim: tw=80 spell:
 
+Compte rendu à mi parcours
+==========================
+
+Prise en main
+~~~~~~~~~~~~~
+
 Puisque le projet avait débuté dès 2010, la première semaine a en partie été
 consacré à se familiariser avec le travail réalisé par Elsa. Partant du
 volumineux nuage de points capté par MCG3D, elle l'avait découpé en différentes
@@ -38,6 +44,9 @@ l'occurrence, il s'agissait de reconstruire le modèle à partir du scan initial
 et de se baser sur Unity pour la visualisation et l'interaction. Je ne dirais
 que quelques mots du premier processus car il était plutôt du ressort de
 Camille.
+
+Unity
+~~~~~
 
 `Unity <http://unity3d.com/unity/>`_ est à la fois un moteur de rendu temps
 réel, un intégrateur de contenus multimédias et un éditeur/compilateur de code.
@@ -147,6 +156,9 @@ Enfin, cette semaine s'est conclue par une visite à la vraie chapelle et au
 musée attenant, situés dans la vielle ville de Québec, ce qui a permis de donner
 une substance à nos travaux.
 
+Recréation du modèle
+~~~~~~~~~~~~~~~~~~~~
+
 Parallèlement, Camille s'est attelée à reconstruire un modèle de la chapelle à
 l'aide d'une version d'essai du logiciel 3Dcoat. En effet, j'avais essayé
 d'importer une des tranches dans Unity, mais le résultat était décevant car les
@@ -203,3 +215,12 @@ photogrammétrie.
         dizaine d'exemplaires, (à l'aide d'un script, voir annexes), ils ne
         doivent pas comporter trop de sommets.
 .. [#] TODO elles s'affrontent toujours d'ailleurs…
+
+Photogrammétrie
+~~~~~~~~~~~~~~~
+
+Animation
+~~~~~~~~~
+
+Le panoscope
+~~~~~~~~~~~~
