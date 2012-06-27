@@ -1,8 +1,10 @@
 
 .. vim: tw=80 spell:
 
-Compte rendu à mi parcours
-==========================
+Compte rendu à mi parcours [#]_
+===============================
+
+.. [#] un peu plus que la moitié même
 
 Prise en main
 ~~~~~~~~~~~~~
@@ -98,7 +100,7 @@ l'interface utilisateur, etc.
 .. [#] on ne peut désormais plus douter de l'orientation initiale de Unity…
 .. [#] *Components* dans la version originale, mais on est tout de même au
         Québec, un peu de respect pour la langue de Molière !
- 
+
 Au-delà de tous ces composants réutilisables qui couvrent déjà un large panel de
 besoins, Unity permet de spécifier des comportements personnalisés au moyen de
 scripts. Plus précisément, chaque script implémente une sous classe de la classe
@@ -216,8 +218,98 @@ photogrammétrie.
         doivent pas comporter trop de sommets.
 .. [#] TODO elles s'affrontent toujours d'ailleurs…
 
+TODO Meshlabb et la triangulation de Poisson, bof sur l'organique, surtout
+avec juste 130000 pts, mieux avec 1M, mais trop lourds, essais avec Polyworks,
+difficile à maitriser
+
 Photogrammétrie
 ~~~~~~~~~~~~~~~
+
+Introduction
+____________
+
+De nos jours, une grande partie de la surface de la Terre est accessible sous
+forme de photographies numériques, que ce soit grâce au déploiement de
+satellites ou la généralisation des appareils photos numériques et des
+smartphones, voire aux efforts de certaines sociétés commerciales. En revanche,
+malgré leur indéniable perfectionnement technologique, les scanneurs 3D restent
+des appareils onéreux et généralement peu maniable, ce qui les confine pour
+l'instant au domaine professionnel, où ils sont notamment utile en métrologie.
+Partant de ce constat, et tenant compte de l'attractivité de la troisième
+dimension pour le grand public, il parait logique d'essayer de reconstruire un
+objet en 3D à partir de photos pris sous différents angles, ce qui est le but de
+la photogrammétrie. Afin d'appliquer cette méthode, j'ai testé plusieurs
+solutions qui se basent toute sur un principe similaire.
+
+Principe
+________
+
+Dans un premier temps, il faut relier les photos entre elles. Cela ne peut se
+faire que si elles respectent plusieurs contraintes [#]_ : le fond de l'image
+doit rester constant au cours des prises de vue – qui doivent préférablement
+s'effectuer avec le même appareil et les mêmes réglages. Il doit – ainsi que
+l'objet – présenter des textures variées et pour les photos se recoupent le
+mieux possible, il ne faut éviter qu'elle soit séparées de plus de dix degrés
+[#]_.  Dans ces conditions, on peut en extraire une caractérisation grâce à la
+méthode SIFT. Cela peut être réalisé avec un logiciel développé par .... Cette
+méthode est aussi intégré au logiciel Bundler, qui l'effectue après un pré
+traitement des images [#]_, et on peut supposer qu'elle est aussi utilisé par
+Photosynth [#]_ dont il sera question plus loin. À noter qu'il existe des
+alternatives à SIFT, notamment la méthode SURF, qui se présente comme plus
+robuste et dont il existe de nombreuses implémentations open source [opensurf]_.
+
+.. [#] dont un des sites donne `une liste imagée <http://google.fr>`_.
+.. [#] ou formulé autrement, deux photos consécutives doivent présenter au moins
+        80% de contenu en commun.
+.. [#] détermination de la focale en fonction des données EXIF,
+        redimensionnement, …
+.. [#] puisque Bundler a été développé dans le cadre de photo tourisme pour
+        Microsoft
+.. [opensurf] Notes on the OpenSURF Library
+
+Ensuite ? on obtient un nuage de points
+
+Solutions testées
+_________________
+
+* MICMAC : développé par l'IGN pour traiter des photos satellites, cela semble
+  une solution robuste mais plus adaptée à des dimensions larges et surtout très
+  difficile d'accès car comme le dit l'article de présentation [micmac]_ : «».
+  Effectivement, sorti des exemples, je n'ai pas eu le courage de modifier les
+  cinq cents ligne du fichier de configuration en XML.
+
+.. [micmac] micmac
+
+* truc d'essai : logiciel de la société ... qui donnait aussi de très bons
+  résultats sur les photos fournis à titre de démonstration. Malheureusement, la
+  version d'essai était limitée à 14 jours, ne permettait pas d'exporter les
+  modèles obtenus et coûtait 1500$? pour être débloquée.
+
+* CVMS et PVMS2 : ensemble de logiciels qui exploitent la sortie de Bundler.
+  CVMS sert à préparer les données pour un traitement par lot sur un cluster
+  tandis que PVMS2 reconstitue effectivement un nuage de points dense. La
+  configuration n'est `pas trop compliquée <http://>`_ mais les résultats
+  n'étaient pas très complet mais sollicitaient en revanche lourdement la
+  machine pour être obtenus.
+
+* VisualSFM :
+
+* PhotoToolkit :
+
+* My 3D scanner :
+
+* ARC 3D :
+
+Récapitulatif
+_____________
+
+=======  ========  =================  =============  ========
+Système  Type      Licence            Documentation  Résultat
+=======  ========  =================  =============  ========
+MICMAC   logiciel  GPL                succincte       N/A
+truc     logiciel  propriétaire 1500  N/A             N/A
+=======  ========  =================  =============  ========
+
 
 Animation
 ~~~~~~~~~
