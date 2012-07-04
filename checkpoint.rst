@@ -271,8 +271,12 @@ robuste et dont il existe de nombreuses implémentations open source [opensurf]_
         une représentation 3D.
 .. [opensurf] Notes on the OpenSURF Library
 
-Une fois qu'on dispose de ces points de correspondance,
-https://fr.wikipedia.org/wiki/Photogrammétrie#Principe_général
+Une fois qu'on dispose de ces points de correspondance, on peut déterminer
+l'orientation relative des photos grâce aux principes de stéréovision. On peut
+ensuite trianguler la position des points  de correspondances à partir de la
+position des différentes caméras, dont on connaît idéalement la distance focale.
+Voir le chapitre 7 de *Computer Vision: Algorithms and Applications*, Richard
+Szeliski pour plus de détails.
 
 Solutions testées
 _________________
@@ -312,25 +316,57 @@ _________________
   <http://www.cs.washington.edu/homes/ccwu/vsfm/>`_ au deux logiciels précédents
   qui présente donc les mêmes défauts et les mêmes qualités.
 
-* PhotoToolkit :
+* PhotoSynth Toolkit : `Solution
+  <http://www.visual-experiments.com/tag/photosynthtoolkit/>`_ développée par un
+  ingénieur français sur son temps libre et qui consiste à utiliser le service
+  PhotoSynth de Microsoft pour extraire les relations entre les images et les
+  fournir en entrée à PVMS. Là encore, les résultats semblaient prometteurs mais
+  le logiciel ne s'exécutait que sur windows 64 bit que seul le portable de
+  Géraud possédait et qui n'est pas malheureusement pas assez puissant pour
+  traiter plus d'une vingtaine de photos en un temps raisonnable [#]_.
 
-* My 3D scanner :
+.. [#] c'est-à-dire qui ne se compte pas en dizaines d'heures d'écran noir et de
+        processeur chauffant comme les forges de l'enfer.
 
-* ARC 3D :
+Reste les solutions en lignes, qui ne présente pas cet inconvénient :
+
+* My 3D scanner : service gratuit qui récupère au plus 200 Mo de photos d'un
+  objet [#]_ et en propose — après quelques heures d'un traitement qui se base
+  notamment sur les `incontournables Bundler et PVMS
+  <http://www.my3dscanner.com/index.php?option=com_k2&view=item&id=58:how-it-works&Itemid=57>`_
+  —  une version en nuage de points et un modèle polygonal sur lequel on peut
+  transférer la couleur des points individuels.
+
+.. [#] voir une vidéo, ce qui permet d'exploiter les techniques de structures
+        from motion.
+
+* ARC 3D : Un  service de même nature est `proposé
+  <http://homes.esat.kuleuven.be/~visit3d/webservice/v2/index.php>`_ par
+  l'université de Louvain. Il se distingue par son intégration poussée avec
+  Meshlab [arc3d]_ qui permet de régler différents paramètres de la reconstruction et par
+  le fait que le modèle polygonal est *UV-mappé* sur les photos d'entrée, même
+  si cela reste impossible à manipuler à la main.
+
+.. [arc3d] Web-based 3D Reconstruction Service
 
 Notons enfin qu'il existe de nombreuses autres solutions référencées dans ce
-`forum <http://pgrammetry.com/forum/>`_.
+`forum <http://pgrammetry.com/forum/>`_ ou plus simplement sur `wikipédia
+<http://en.wikipedia.org/wiki/Photogrammetry#Current_suite_of_software>`_.
 
 Récapitulatif
 _____________
 
-=======  ========  =================  =============  ========
-Système  Type      Licence            Documentation  Résultat
-=======  ========  =================  =============  ========
-MICMAC   logiciel  GPL                succincte       N/A
-truc     logiciel  propriétaire 1349  N/A             N/A
-=======  ========  =================  =============  ========
-
+==================      ========  =====================         =============  ==========
+Système                 Type      Licence et coût               Documentation  Résultat
+==================      ========  =====================         =============  ==========
+MICMAC                  logiciel  GPL, gratuit                  succincte      N/A
+3DSOM                   logiciel  propriétaire, 1349$           N/A            N/A
+PVMS2                   logiciel  GPL, gratuit                  suffisante     très lourd  
+VisualSFM               logiciel  GPL, gratuit                  suffisante     lourd
+PhotoSynth Toolkit      logiciel  mixte, gratuit                suffisante     lourd
+My 3D scanner           web       propriétaire, gratuit         imagée         bon
+ARC 3D                  web       propriétaire, gratuit         fournie        bon     
+==================      ========  =====================         =============  ==========
 
 Animation
 ~~~~~~~~~
@@ -403,4 +439,32 @@ Blender qui s'exportent avec des fortunes diverses sous Unity.
 
 Le panoscope
 ~~~~~~~~~~~~
-http://tot.sat.qc.ca/dispositifs_panoscopes.html
+
+L'immersion dépend en grande partie de dispositif d'affichage utilisé. Même s'il
+n'est pas rare de croiser des gens totalement absorbés par l'écran de 15 cm² de
+leur téléphone, plus l'affichage se rapproche de la vision naturelle, plus
+l'impression de réalisme est renforcée. À ce titre, le LAMIC dispose, outre des
+projecteurs balayant les 4 murs d'une vaste pièce blanche, d'un `panoscope
+<http://tot.sat.qc.ca/dispositifs_panoscopes.html.>`_ Il s'agit d'un écran
+hémisphérique rigide qui enveloppe l'utilisateur pour recouvrer tout son champ
+de vision. Il combiné à un projecteur hémisphérique situé au centre du cercle
+supérieur. Dès lors se pose la question de la méthode à employer pour exploiter
+cet écran exotique. 
+
+Comme nous l'a expliqué `Sébastien Roy
+<http://www.iro.umontreal.ca/~roys/fr_index.shtml>`_, il « suffit » [#]_ de
+projeter la géométrie de l'écran à plat et d'y plaquer une image qui va
+compenser la déformation. On peut donc réutiliser la méthode de l'UV mapping et
+c'est d'ailleurs ce qu'a fait la SAT. Géraud a récupéré un projet Unity qui
+mettait cette technique à l'œuvre : cinq caméras attachées au point de vue
+filmait la scène vers la gauche, la droite, le haut, le bas, l'avant et
+l'arrière et plaçait le résultat dans une *RenderTexture*. Ces textures étaient
+alors appliquées à la bonne position sur un cercle aplatit représentant le dôme,
+qui était à son tour filmé par la caméra principale.
+
+.. [#] sauf que ça va faire un mois et demi, et que ça ne marche pas mieux qu'au
+        premier jour. L'un des problèmes et qu'il faut utiliser la résolution native du
+        projecteur pour un résultat optimal, ce que Mac OS se refuse à faire avec un
+        acharnement qui confine à l'insolence. L'autre écueil étant que la projection UV
+        doit compenser les distortions de la lentille, ce qui nécessite des informations
+        assez précises.
