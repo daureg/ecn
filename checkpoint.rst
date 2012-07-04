@@ -1,7 +1,7 @@
 
 .. vim: tw=80 spell:
 
-Compte rendu à mi parcours [#]_
+Compte rendu à mi-parcours [#]_
 ===============================
 
 .. [#] un peu plus que la moitié même…
@@ -25,9 +25,9 @@ réalisé, le système était un assemblage hétérogène de plusieurs logiciels
 langages. Il s'appuyait sur une plateforme linux qui exécutait, outre un serveur
 audio et un serveur DHCP, un ensemble de composants développés par la SAT :
 `SPIN <http://spinframework.org/content/overview>`_. Cette bibliothèque libre
-(écrite en C++) encapsule l'utilisation de OpensceneGraph pour la visualisation
+(écrite en C++) encapsule l'utilisation d'OpensceneGraph pour la visualisation
 3D, OpenSoundControl pour la communication réseau et la téléprésence, ainsi que
-python pour le scripting et les interactions. Le tout était piloté par un
+python pour le scripting et les interactions. Le tout était piloté par une
 interface en pure data à l'aide de `pdsheefa
 <http://code.sat.qc.ca/redmine/projects/pdsheefa/wiki/About>`_. Autant dire que
 les messages d'erreur étaient pour le moins perdus dans ces diverses couches et
@@ -43,9 +43,7 @@ recommandations de notre maitre de stage et de M. Vesac, nous avons donc décid�
 de repartir sur de nouvelles bases (en espérant que d'éventuels futurs
 stagiaires n'aient pas à emprunter une troisième voie l'année prochaine…). En
 l'occurrence, il s'agissait de reconstruire le modèle à partir du scan initial
-et de se baser sur Unity pour la visualisation et l'interaction. Je ne dirais
-que quelques mots du premier processus car il était plutôt du ressort de
-Camille.
+et de se baser sur Unity pour la visualisation et l'interaction.
 
 Unity
 ~~~~~
@@ -135,19 +133,19 @@ l'utilisateur entre dans une zone prédéfinie.
 
 À ce stade, le lecteur est normalement impatient d'avoir un exemple de ces
 fameux scripts. Outre ceux fournis avec Unity pour le déplacement d'un
-personnage à la souris et au clavier (que j'ai un peu adapté pour qu'il permette
-de voler), le premier que j'ai écrit concerne la transition entre la visite de
-la chapelle et l'observation d'un objet en particulier. Le code commenté est
-disponible en annexe mais schématiquement, à chaque image, on lance un rayon à
-partir de la position du visiteur dans la direction de son regard. Si celui-ci
-intersecte l'objet en question, on allume un projecteur pour signaler la
-possibilité d'une interaction. Si l'utilisateur clique, on lance animation qui
-l'amène progressivement en face de l'objet tandis que le reste de la scène
+personnage à la souris et au clavier (que Géraud a un peu adapté pour qu'il
+permette de voler), le premier qu'il a écrit concerne la transition entre la
+visite de la chapelle et l'observation d'un objet en particulier. Le code
+commenté est disponible en annexe mais schématiquement, à chaque image, on lance
+un rayon à partir de la position du visiteur dans la direction de son regard. Si
+celui-ci intersecte l'objet en question, on allume un projecteur pour signaler
+la possibilité d'une interaction. Si l'utilisateur clique, on lance animation
+qui l'amène progressivement en face de l'objet tandis que le reste de la scène
 s'assombrit jusqu'à disparaitre. Une fois arrivé, on affiche divers éléments
 contextuels en prenant soin de désactiver les contrôles de mouvements. Unity
 permet aussi d'envoyer des requêtes à un serveur web par l'intermédiaire de la
 classe `WWWForm
-<http://docs.unity3d.com/Documentation/ScriptReference/WWWForm.html>`_. J'ai
+<http://docs.unity3d.com/Documentation/ScriptReference/WWWForm.html>`_. Géraud a
 exploité cette possibilité en écrivant deux petits scripts PHP qui permettent de
 laisser un commentaire sur l'objet et de récupérer ceux des visiteurs précédents
 qui sont affichés à l'écran. Quand l'utilisateur en à terminer, il lui suffit de
@@ -182,11 +180,11 @@ constater arrivé à la fin, qu'elles étaient les moins réussies, ce qui a for
 Camille à les refaire. Cette manière de procéder a aussi nécessité de recoller
 les différents morceaux entre eux, ce qui n'était pas trivial car ils n'avaient
 pas forcément la même géométrie aux extrémités (par exemple un mur pouvait être
-constitué de cinq bandes d'un côté et seulement trois de l'autre). J'ai pour
+constitué de cinq bandes d'un côté et seulement trois de l'autre). Géraud a pour
 cela utilisé le logiciel Blender [#]_, qui a servi par la suite pour le plaquage
 de textures. C'est en effet la méthode la plus simple pour obtenir un bon rendu
-dans Unity et s'il était aussi possible de le faire dans 3D-Coat (de manière plus
-intuitive semble-t-il), le résultat était moins bon. Succinctement, cela
+dans Unity et s'il était aussi possible de le faire dans 3D-Coat (de manière
+plus intuitive semble-t-il), le résultat était moins bon. Succinctement, cela
 consiste à déplier le modèle 3D afin de faire correspondre les coordonnées
 *(x,y,z)* de chaque sommet avec un point *(u,v)* [#]_ d'une image qui fournit
 l'information de couleur (dans notre cas, il s'agissait d'images de l'intérieur
@@ -240,7 +238,7 @@ l'instant au domaine professionnel, où ils sont notamment utile en métrologie.
 Partant de ce constat, et tenant compte de l'attractivité de la troisième
 dimension pour le grand public, il parait logique d'essayer de reconstruire un
 objet en 3D à partir de photos pris sous différents angles, ce qui est le but de
-la photogrammétrie. Afin d'appliquer cette méthode, j'ai testé plusieurs
+la photogrammétrie. Afin d'appliquer cette méthode, Géraud a testé plusieurs
 solutions qui se basent toute sur un principe similaire.
 
 Principe
@@ -279,20 +277,24 @@ https://fr.wikipedia.org/wiki/Photogrammétrie#Principe_général
 Solutions testées
 _________________
 
-* MICMAC : développé par l'IGN pour traiter des photos satellites, cela semble
+* MICMAC : développé par l'IGN pour traiter des photos satellites, cela semble
   une solution robuste mais plus adaptée à des dimensions larges et surtout très
-  difficile d'accès car comme le dit l'article de présentation [micmac]_ : «*it
+  difficile d'accès car comme le dit l'article de présentation [micmac]_ : «*it
   is probably more complex but also more complete, its targeted user is rather
   professionals (architects, archaeologist, geomophologist) than people*».
-  Effectivement, sorti des exemples, je n'ai pas eu le courage de modifier les
-  cinq cents ligne du fichier de configuration en XML.
+  Effectivement, sorti des exemples, Géraud n'a pas eu le courage de modifier
+  les cinq cents ligne du fichier de configuration en XML.
 
 .. [micmac] micmac
 
-* truc d'essai : logiciel de la société ... qui donnait aussi de très bons
-  résultats sur les photos fournis à titre de démonstration. Malheureusement, la
-  version d'essai était limitée à 14 jours, ne permettait pas d'exporter les
-  modèles obtenus et coûtait 1500$? pour être débloquée.
+* 3DSOM Pro : logiciel de la société Creative Dimension Software Ltd qui donnait
+  aussi de très bons résultats sur les photos fournis à titre de démonstration
+  [#]_.
+  Malheureusement, la version d'essai était limitée à 14 jours, ne permettait
+  pas d'exporter les modèles obtenus et coûtait 1349$ pour être débloquée.
+
+.. [#] qui avaient manifestement été obtenues dans de très `bonnes conditions
+    <http://www.3dsom.com/features/process.html>`_.
 
 * CVMS et PVMS2 : ensemble de logiciels [#]_ qui exploitent la sortie de
   Bundler. `CVMS <http://grail.cs.washington.edu/software/cmvs/>`_ sert à
@@ -308,7 +310,7 @@ _________________
 
 * VisualSFM  : il s'agit d'une `interface graphique
   <http://www.cs.washington.edu/homes/ccwu/vsfm/>`_ au deux logiciels précédents
-  qui présente donc les mêmes défauts et les même qualités.
+  qui présente donc les mêmes défauts et les mêmes qualités.
 
 * PhotoToolkit :
 
@@ -326,7 +328,7 @@ _____________
 Système  Type      Licence            Documentation  Résultat
 =======  ========  =================  =============  ========
 MICMAC   logiciel  GPL                succincte       N/A
-truc     logiciel  propriétaire 1500  N/A             N/A
+truc     logiciel  propriétaire 1349  N/A             N/A
 =======  ========  =================  =============  ========
 
 
@@ -390,7 +392,7 @@ Blender qui s'exportent avec des fortunes diverses sous Unity.
   classe plus large d'objets. En revanche, elle n'est pas supportée nativement
   par Unity. Il existe un `plugin pour Blender
   <http://rezzable.com/metamorph>`_, qui ne fonctionne pas avec la dernière
-  version et qui donc été assez laborieux à mettre en place. J'ai essayé de
+  version et qui donc été assez laborieux à mettre en place. Géraud a essayé de
   l'utiliser pour corner les pages du livres en train de se tourner mais il
   stocke les déplacements des sommets dans une image (dont les composantes
   rouge, vert, bleu représente un vecteur) dont la résolution n'était compatible
