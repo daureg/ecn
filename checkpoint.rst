@@ -216,12 +216,6 @@ photogrammétrie.
         doivent pas comporter trop de sommets.
 .. [#] TODO elles s'affrontent toujours d'ailleurs…
 
-TODO Meshlabb et la triangulation de Poisson, bof sur l'organique, surtout
-avec juste 130000 pts, mieux avec 1M, mais trop lourds, essais avec Polyworks,
-difficile à maitriser
-http://meshlab.sourceforge.net/
-http://www.innovmetric.com/polyworks/3D-scanners/home.aspx?lang=en
-
 Photogrammétrie
 ~~~~~~~~~~~~~~~
 
@@ -361,11 +355,11 @@ Système                 Type      Licence et coût               Documentation 
 ==================      ========  =====================         =============  ==========
 MICMAC                  logiciel  GPL, gratuit                  succincte      N/A
 3DSOM                   logiciel  propriétaire, 1349$           N/A            N/A
-PVMS2                   logiciel  GPL, gratuit                  suffisante     très lourd  
+PVMS2                   logiciel  GPL, gratuit                  suffisante     très lourd
 VisualSFM               logiciel  GPL, gratuit                  suffisante     lourd
 PhotoSynth Toolkit      logiciel  mixte, gratuit                suffisante     lourd
 My 3D scanner           web       propriétaire, gratuit         imagée         bon
-ARC 3D                  web       propriétaire, gratuit         fournie        bon     
+ARC 3D                  web       propriétaire, gratuit         fournie        bon
 ==================      ========  =====================         =============  ==========
 
 Animation
@@ -449,7 +443,7 @@ projecteurs balayant les 4 murs d'une vaste pièce blanche, d'un `panoscope
 hémisphérique rigide qui enveloppe l'utilisateur pour recouvrer tout son champ
 de vision. Il combiné à un projecteur hémisphérique situé au centre du cercle
 supérieur. Dès lors se pose la question de la méthode à employer pour exploiter
-cet écran exotique. 
+cet écran exotique.
 
 Comme nous l'a expliqué `Sébastien Roy
 <http://www.iro.umontreal.ca/~roys/fr_index.shtml>`_, il « suffit » [#]_ de
@@ -468,3 +462,105 @@ qui était à son tour filmé par la caméra principale.
         acharnement qui confine à l'insolence. L'autre écueil étant que la projection UV
         doit compenser les distortions de la lentille, ce qui nécessite des informations
         assez précises.
+
+Nuage de points
+~~~~~~~~~~~~~~~
+
+La matière première de notre modélisation, à part les cas simples où une photo
+de profil suffisait, a constitué en des nuage de points. Il existe de
+`nombreuses méthodes
+<http://fr.wikipedia.org/wiki/Scanner_tridimensionnel#Techniques_de_collecte_de_données>`_
+pour scanner un objet en 3D. Ainsi, MCG3D utilise `un produit conçu par Arius3D
+<http://www.arius3d.com/a3dscanner.html>`_, qui est un scanner sans contact
+actif par triangulation laser fournissant en sortie trois coordonnées spatiales
+par points associées à une couleur. Ces techniques ont toutefois en commun de ne
+fournir qu'un échantillon des sommets qui constitue l'objet, sans pouvoir
+capturer d'information sur la surface continue qui les relie. Or la solution la
+plus courante (et donc devenue la plus riche et la plus performante au fil du
+temps) pour afficher des objets en synthèse d'image se base sur des modèles
+polygonaux [#]_, ce qui nécessite un post traitement qui s'est avéré
+particulièrement ardu et chronophage.
+
+.. [#] même si dans une perspective artistique, on peut essayer de travailler
+        l'esthétique du nuage de points.
+
+Affichage tel quel
+__________________
+
+Les fichiers fournis par MCG3D étaient dans un format simplissime : chaque ligne
+contient les trois coordonnées d'un point et son intensité suivant les trois
+composantes rouge, verte et bleue. Une idée tout aussi simple est alors de lire
+ce fichier ligne à ligne et d'ajouter à chaque fois la particule correspondante
+à un système de particules `disponible
+<http://docs.unity3d.com/Documentation/ScriptReference/ParticleSystem.html>`_
+dans Unity. Malheureusement, si le résultat est globalement celui auquel on
+s'attend [photo], les performances sont déplorables (8 images par seconde
+pour 350 000 points alors que la chapelle intérieure à la résolution de 2mm en
+contient plus de quatre millions) et l'affichage intermittent. Une des solutions
+est de ne conserver qu'un point sur *n*, car même si cette approche paraît un
+peu brutale, un `exemple sur internet
+<http://scotland.proximity.on.ca/asalga/demos/freecam/>`_ semblait prometteur.
+On pourrait aussi essayer de découper le nuage entier en sous cubes pour
+n'afficher que ceux qui sont dans le champ de vision de l'utilisateur.
+
+Triangulation
+_____________
+
+Les scans sont tellement détaillés que l'œil humain n'a aucun mal à en extraire
+une représentation surfacique. À titre d'exemple, nous avons mené nos premiers
+essais sur l'autel droit issu du scan de 2010 qui compte 130 000 points, avant
+de récupérer une version fusionnée du scan de 2012 de près de 900 000 points.
+Mais ce n'est manifestement pas l'avis de l'ordinateur, d'abord à cause du bruit
+de mesure, qui perturbe les surfaces planes [#]_. Ensuite parce qu'à cause des
+occlusions, il faut scanner les objets sous différents angles et que la réunion
+de ces données multiples introduit de nouvelles ambigüités. C'est
+particulièrement flagrant sur l'autel, qui possède des formes organiques assez
+fines.
+
+.. [#] problème que l'on peut atténuer en utilisant un filtre médian, au prix de
+        la perte de détails.
+
+Nous avons utilisé deux logiciels pour essayer d'obtenir des polygones à partir
+d'un nuage de points, même s'il en existe bien d'autres, comme `Geomagic
+<http://www.geomagic.com/en/products/wrap/overview/>`_ présenté de façon
+impressionnante lors d'une réunion chez Creaform.
+
+* Polywork : utilisé par MCG3D et dont le LAMIC possède la version 2010. C'est
+  `un logiciel complexe destinée à l'industrie
+  <http://www.innovmetric.com/polyworks/3D-scanners/home.aspx?lang=en>`_. À
+  force d'essais, nous avions abouti à un modèle probant de 1,7 millions de
+  faces, qui possédait malheureusement l'agaçant défaut de ne pas avoir toutes
+  ses faces orientées du même sens, ce qui était difficile à corriger, tant
+  manuellement qu'automatiquement. [photo ?]
+
+* `Meshlab <http://meshlab.sourceforge.net/>`_ : initialement développé au sein
+  de l'université de Pise par des étudiants en informatique, il implémente de
+  nombreuses techniques concernant les maillages parues dans des articles
+  universitaires. On peut ainsi calculer les normales des points [#]_ à partir
+  de ses voisins avant d'effectuer une reconstruction de Poisson [#]_ et de
+  transférer les couleurs des points à la face dont ils sont les plus proches. Là
+  encore, les résultats ne sont pas ridicules mais jurent avec la modélisation
+  soignée du chœur de la chapelle.
+
+.. [#] qui correspond grosso modo à la moyenne des normales des faces contenant
+        ce point dans le polygone convexe enveloppant le nuage.
+.. [#] détailler la méthode ?
+
+Ces méthodes étant assez gourmandes en ressource, il nous a paru plus prudent de
+procéder autrement pour les nuages correspondants à l'extérieur (2,3 millions de
+points), à l'intérieur de la chapelle publique (4,5M) et au sanctuaire (2,8M),
+d'autant que ce sont des zones qui ne sont pas prioritaires [#]_. En
+l'occurrence, en utilisant Blender, on crée une esquisse plane qui reprend les
+grands traits de la structure considérée [#]_, on la subdivise en utilisant
+l'algorithme de `Catmull-Clark
+<https://en.wikipedia.org/wiki/Catmull–Clark_subdivision_surface>`_ pour
+affiner sa précision, on projette chacun de ses sommets sur le sommet le plus
+proche dans le nuage et on effectue un filtre médian pour adoucir le résultat et
+enlever les points aberrants. Le résultat peut évident s'avérer assez éloigné de
+la réalité, mais suffit à en fournir une illusion satisfaite et la surface
+obtenue est d'une grande régularité [photo].
+
+.. [#] même s'il serait aussi tentant de les afficher directement en points.
+.. [#] puisque selon Thierry Moszkowicz, la détection d'arêtes en 3D est un
+        problème délicat, alors même qu'il est bien maitrisé en 2D et qu'on
+        possède des informations de couleur.
